@@ -133,7 +133,7 @@ def test_default_config_options_property(_instance):
 
 def test_default_options_property(_instance):
     assert {
-        'skip-tags': 'molecule-notest,notest',
+        'skip-tags': 'molecule_notest,notest',
     } == _instance.default_options
 
 
@@ -187,7 +187,7 @@ def test_options_property(_instance):
         'become': True,
         'foo': 'bar',
         'v': True,
-        'skip-tags': 'molecule-notest,notest',
+        'skip-tags': 'molecule_notest,notest',
     }
 
     assert x == _instance.options
@@ -198,7 +198,7 @@ def test_options_property_does_not_merge(_instance):
         _instance._config.action = action
 
         assert {
-            'skip-tags': 'molecule-notest,notest',
+            'skip-tags': 'molecule_notest,notest',
         } == _instance.options
 
 
@@ -210,7 +210,7 @@ def test_options_property_handles_cli_args(_instance):
         'vvv': True,
         'become': True,
         'diff': True,
-        'skip-tags': 'molecule-notest,notest',
+        'skip-tags': 'molecule_notest,notest',
     }
 
     assert x == _instance.options

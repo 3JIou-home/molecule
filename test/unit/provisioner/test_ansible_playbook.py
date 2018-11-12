@@ -56,7 +56,7 @@ def test_bake(_inventory_file, _instance):
         str(sh.ansible_playbook),
         '--become',
         '--inventory={}'.format(_inventory_file),
-        '--skip-tags=molecule-notest,notest',
+        '--skip-tags=molecule_notest,notest',
         pb,
     ]
     result = str(_instance._ansible_command).split()
@@ -71,7 +71,7 @@ def test_bake_removes_non_interactive_options_from_non_converge_playbooks(
     x = [
         str(sh.ansible_playbook),
         '--inventory={}'.format(_inventory_file),
-        '--skip-tags=molecule-notest,notest',
+        '--skip-tags=molecule_notest,notest',
         'playbook',
     ]
 
@@ -87,7 +87,7 @@ def test_bake_has_ansible_args(_inventory_file, _instance):
     x = [
         str(sh.ansible_playbook),
         '--inventory={}'.format(_inventory_file),
-        '--skip-tags=molecule-notest,notest',
+        '--skip-tags=molecule_notest,notest',
         'playbook',
         'foo',
         'bar',
@@ -107,7 +107,7 @@ def test_bake_does_not_have_ansible_args(_inventory_file, _instance):
         x = [
             str(sh.ansible_playbook),
             '--inventory={}'.format(_inventory_file),
-            '--skip-tags=molecule-notest,notest',
+            '--skip-tags=molecule_notest,notest',
             'playbook',
         ]
 
@@ -132,7 +132,7 @@ def test_execute_bakes(_inventory_file, patched_run_command, _instance):
     x = [
         str(sh.ansible_playbook),
         '--inventory={}'.format(_inventory_file),
-        '--skip-tags=molecule-notest,notest',
+        '--skip-tags=molecule_notest,notest',
         'playbook',
     ]
 
@@ -151,7 +151,7 @@ def test_execute_bakes_with_ansible_args(_inventory_file, patched_run_command,
     x = [
         str(sh.ansible_playbook),
         '--inventory={}'.format(_inventory_file),
-        '--skip-tags=molecule-notest,notest',
+        '--skip-tags=molecule_notest,notest',
         'playbook',
         '--foo',
         '--bar',

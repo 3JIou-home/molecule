@@ -140,9 +140,14 @@ class Testinfra(base.Base):
     def additional_files_or_dirs(self):
         files_list = []
         c = self._config.config
-        for f in c['verifier']['additional_files_or_dirs']:
-            glob_path = os.path.join(self._config.verifier.directory, f)
-            glob_list = glob.glob(glob_path)
+        paths = []
+        for i in c['verifier']['additional_files_or_dirs']:
+            for f in self._config.provisioner.env['ANSIBLE_ROLES_PATH'].split(':'):
+                LOG.warn(f)
+                paths.append(os.path.join(f, i))
+            paths.append(os.path.join(self._config.verifier.directory, i))
+        for path in paths:
+            glob_list = glob.glob(path)
             if glob_list:
                 files_list.extend(glob_list)
 

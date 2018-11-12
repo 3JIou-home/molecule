@@ -312,6 +312,9 @@ class Ansible(base.Base):
                 'scp_if_ssh': True,
                 'control_path': '%(directory)s/%%h-%%p-%%r',
             },
+            'connection': {
+                'pipelining': True,
+            },
         }
 
     @property
@@ -415,8 +418,16 @@ class Ansible(base.Base):
             filter_plugins_path = '{}:{}'.format(filter_plugins_path, path)
         except KeyError:
             pass
-
-        env['ANSIBLE_ROLES_PATH'] = roles_path
+        # Костыль для работы структуры типа:
+        # ansible
+        #  - roles
+        #    - molcule
+        #    - project
+        #      - project-frontend
+        #    - common-role
+        env['ANSIBLE_ROLES_PATH'] = roles_path + ':' + roles_path + '/roles' + ':' + roles_path + '/roles/molecule'
+        #
+        self._config.scenario.ephemeral_directory
         env['ANSIBLE_LIBRARY'] = library_path
         env['ANSIBLE_FILTER_PLUGINS'] = filter_plugins_path
 

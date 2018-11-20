@@ -148,7 +148,6 @@ class Testinfra(base.Base):
             paths.append(os.path.join(self._config.verifier.directory, i))
         for path in paths:
             glob_list = glob.glob(path)
-            LOG.warn(path)
             if glob_list:
                 files_list.extend(glob_list)
 

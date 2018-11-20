@@ -135,8 +135,8 @@ class Yamllint(base.Base):
             os.path.basename(self._config.verifier.directory),
         ]
         generators = [
-            util.os_walk(self._config.lintdir, '*.yml', excludes),
-            util.os_walk(self._config.lintdir, '*.yaml', excludes),
+            util.os_walk(self._config.lint_directory, '*.yml', excludes),
+            util.os_walk(self._config.lint_directory, '*.yaml', excludes),
         ]
 
         return [f for g in generators for f in g]

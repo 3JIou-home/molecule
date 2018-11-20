@@ -203,7 +203,7 @@ class Config(object):
         }
 
     @property
-    def lintdir(self):
+    def lint_directory(self):
         return self.scenario.directory
 
     @property

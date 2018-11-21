@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ff6e42e0-ec04-4d03-9b73-aaa5a6c36019" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/molecule/verifier/testinfra.py" beforeDir="false" afterPath="$PROJECT_DIR$/molecule/verifier/testinfra.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -21,7 +22,7 @@
       <usages-collector id="statistics.file.extensions.open">
         <counts>
           <entry key="json" value="1" />
-          <entry key="py" value="62" />
+          <entry key="py" value="63" />
           <entry key="rst" value="3" />
           <entry key="yml" value="5" />
         </counts>
@@ -29,7 +30,7 @@
       <usages-collector id="statistics.file.types.open">
         <counts>
           <entry key="JSON" value="1" />
-          <entry key="Python" value="62" />
+          <entry key="Python" value="63" />
           <entry key="ReST" value="3" />
           <entry key="YAML_EX" value="5" />
         </counts>
@@ -55,15 +56,6 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="510">
               <caret line="77" column="52" lean-forward="true" selection-start-line="77" selection-start-column="52" selection-end-line="77" selection-end-column="52" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/build/lib/molecule/provisioner/ansible.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="225">
-              <caret line="322" column="49" selection-start-line="322" selection-start-column="49" selection-end-line="322" selection-end-column="49" />
             </state>
           </provider>
         </entry>
@@ -101,8 +93,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/molecule/verifier/testinfra.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="429">
-              <caret line="152" lean-forward="true" selection-start-line="152" selection-end-line="152" />
+            <state relative-caret-position="-410">
+              <caret line="144" column="83" selection-start-line="144" selection-start-column="83" selection-end-line="144" selection-end-column="83" />
               <folding>
                 <element signature="e#1120#1131#0" expanded="true" />
               </folding>
@@ -123,7 +115,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>ANSIBLE_R</find>
       <find>ANSIBLE_</find>
       <find>ANSIBLE_CONFIG</find>
       <find>_instance</find>
@@ -153,6 +144,7 @@
       <find>ephemeral_directory</find>
       <find>lint</find>
       <find>lintdir</find>
+      <find>login</find>
     </findStrings>
     <replaceStrings>
       <replace>molecule_notest</replace>
@@ -241,35 +233,6 @@
               <item name="molecule" type="b2602c69:ProjectViewProjectNode" />
               <item name="molecule" type="462c0819:PsiDirectoryNode" />
             </path>
-            <path>
-              <item name="molecule" type="b2602c69:ProjectViewProjectNode" />
-              <item name="molecule" type="462c0819:PsiDirectoryNode" />
-              <item name="molecule" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="molecule" type="b2602c69:ProjectViewProjectNode" />
-              <item name="molecule" type="462c0819:PsiDirectoryNode" />
-              <item name="molecule" type="462c0819:PsiDirectoryNode" />
-              <item name="command" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="molecule" type="b2602c69:ProjectViewProjectNode" />
-              <item name="molecule" type="462c0819:PsiDirectoryNode" />
-              <item name="molecule" type="462c0819:PsiDirectoryNode" />
-              <item name="lint" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="molecule" type="b2602c69:ProjectViewProjectNode" />
-              <item name="molecule" type="462c0819:PsiDirectoryNode" />
-              <item name="molecule" type="462c0819:PsiDirectoryNode" />
-              <item name="provisioner" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="molecule" type="b2602c69:ProjectViewProjectNode" />
-              <item name="molecule" type="462c0819:PsiDirectoryNode" />
-              <item name="molecule" type="462c0819:PsiDirectoryNode" />
-              <item name="verifier" type="462c0819:PsiDirectoryNode" />
-            </path>
           </expand>
           <select />
         </subPane>
@@ -351,6 +314,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-1920" y="0" width="1920" height="1080" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info id="Favorites" order="0" side_tool="true" />
       <window_info content_ui="combo" id="Project" order="1" visible="true" weight="0.24973376" />
@@ -536,13 +500,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/molecule/driver/docker.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="375">
-          <caret line="25" column="29" lean-forward="true" selection-start-line="25" selection-start-column="29" selection-end-line="25" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/molecule/driver/base.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="644">
@@ -716,6 +673,16 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/molecule/driver/docker.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1740">
+          <caret line="116" column="8" selection-start-line="116" selection-start-column="8" selection-end-line="116" selection-end-column="8" />
+          <folding>
+            <element signature="e#1120#1158#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/molecule/config.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="465">
@@ -728,8 +695,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/molecule/verifier/testinfra.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="429">
-          <caret line="152" lean-forward="true" selection-start-line="152" selection-end-line="152" />
+        <state relative-caret-position="-410">
+          <caret line="144" column="83" selection-start-line="144" selection-start-column="83" selection-end-line="144" selection-end-column="83" />
           <folding>
             <element signature="e#1120#1131#0" expanded="true" />
           </folding>

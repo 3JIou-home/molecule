@@ -143,7 +143,6 @@ class Testinfra(base.Base):
         paths = []
         for i in c['verifier']['additional_files_or_dirs']:
             for f in self._config.provisioner.env['ANSIBLE_ROLES_PATH'].split(':'):
-                LOG.warn(f)
                 paths.append(os.path.join(f, i))
             paths.append(os.path.join(self._config.verifier.directory, i))
         for path in paths:

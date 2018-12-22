@@ -27,6 +27,13 @@ import shutil
 
 from molecule import util
 
+from ..conftest import (
+    change_dir_to,
+    needs_inspec,
+    needs_rubocop,
+    skip_unsupported_matrix,
+)
+
 
 @pytest.fixture
 def scenario_to_test(request):
@@ -46,6 +53,7 @@ def driver_name(request):
     return request.param
 
 
+@skip_unsupported_matrix
 @pytest.mark.parametrize(
     'scenario_to_test, driver_name, scenario_name', [
         ('side_effect', 'docker', 'default'),
@@ -64,6 +72,9 @@ def test_command_side_effect(scenario_to_test, with_scenario, scenario_name):
     pytest.helpers.run_command(cmd)
 
 
+@needs_inspec
+@needs_rubocop
+@skip_unsupported_matrix
 def test_command_init_role_inspec(temp_dir):
     role_directory = os.path.join(temp_dir.strpath, 'test-init')
     options = {
@@ -73,11 +84,11 @@ def test_command_init_role_inspec(temp_dir):
     cmd = sh.molecule.bake('init', 'role', **options)
     pytest.helpers.run_command(cmd)
 
-    os.chdir(role_directory)
+    with change_dir_to(role_directory):
+        sh.molecule('test')
 
-    sh.molecule('test')
 
-
+@skip_unsupported_matrix
 def test_command_init_scenario_inspec(temp_dir):
     options = {
         'role_name': 'test-init',
@@ -86,21 +97,21 @@ def test_command_init_scenario_inspec(temp_dir):
     pytest.helpers.run_command(cmd)
 
     role_directory = os.path.join(temp_dir.strpath, 'test-init')
-    os.chdir(role_directory)
+    with change_dir_to(role_directory):
+        molecule_directory = pytest.helpers.molecule_directory()
+        scenario_directory = os.path.join(molecule_directory, 'test-scenario')
+        options = {
+            'scenario_name': 'test-scenario',
+            'role_name': 'test-init',
+            'verifier_name': 'inspec',
+        }
+        cmd = sh.molecule.bake('init', 'scenario', **options)
+        pytest.helpers.run_command(cmd)
 
-    molecule_directory = pytest.helpers.molecule_directory()
-    scenario_directory = os.path.join(molecule_directory, 'test-scenario')
-    options = {
-        'scenario_name': 'test-scenario',
-        'role_name': 'test-init',
-        'verifier_name': 'inspec',
-    }
-    cmd = sh.molecule.bake('init', 'scenario', **options)
-    pytest.helpers.run_command(cmd)
-
-    assert os.path.isdir(scenario_directory)
+        assert os.path.isdir(scenario_directory)
 
 
+@skip_unsupported_matrix
 def test_command_init_role_goss(temp_dir):
     role_directory = os.path.join(temp_dir.strpath, 'test-init')
     options = {
@@ -110,9 +121,8 @@ def test_command_init_role_goss(temp_dir):
     cmd = sh.molecule.bake('init', 'role', **options)
     pytest.helpers.run_command(cmd)
 
-    os.chdir(role_directory)
-
-    sh.molecule('test')
+    with change_dir_to(role_directory):
+        sh.molecule('test')
 
 
 def test_command_init_scenario_goss(temp_dir):
@@ -123,19 +133,18 @@ def test_command_init_scenario_goss(temp_dir):
     pytest.helpers.run_command(cmd)
 
     role_directory = os.path.join(temp_dir.strpath, 'test-init')
-    os.chdir(role_directory)
+    with change_dir_to(role_directory):
+        molecule_directory = pytest.helpers.molecule_directory()
+        scenario_directory = os.path.join(molecule_directory, 'test-scenario')
+        options = {
+            'scenario_name': 'test-scenario',
+            'role_name': 'test-init',
+            'verifier_name': 'goss',
+        }
+        cmd = sh.molecule.bake('init', 'scenario', **options)
+        pytest.helpers.run_command(cmd)
 
-    molecule_directory = pytest.helpers.molecule_directory()
-    scenario_directory = os.path.join(molecule_directory, 'test-scenario')
-    options = {
-        'scenario_name': 'test-scenario',
-        'role_name': 'test-init',
-        'verifier_name': 'goss',
-    }
-    cmd = sh.molecule.bake('init', 'scenario', **options)
-    pytest.helpers.run_command(cmd)
-
-    assert os.path.isdir(scenario_directory)
+        assert os.path.isdir(scenario_directory)
 
 
 def test_command_init_scenario_with_invalid_role_raises(temp_dir):
@@ -146,19 +155,18 @@ def test_command_init_scenario_with_invalid_role_raises(temp_dir):
     pytest.helpers.run_command(cmd)
 
     role_directory = os.path.join(temp_dir.strpath, 'test-role')
-    os.chdir(role_directory)
+    with change_dir_to(role_directory):
+        options = {
+            'scenario_name': 'default',
+            'role_name': 'invalid-role-name',
+        }
+        with pytest.raises(sh.ErrorReturnCode) as e:
+            cmd = sh.molecule.bake('init', 'scenario', **options)
+            pytest.helpers.run_command(cmd, log=False)
 
-    options = {
-        'scenario_name': 'default',
-        'role_name': 'invalid-role-name',
-    }
-    with pytest.raises(sh.ErrorReturnCode) as e:
-        cmd = sh.molecule.bake('init', 'scenario', **options)
-        pytest.helpers.run_command(cmd, log=False)
-
-    msg = ("ERROR: The role 'invalid-role-name' not found. "
-           'Please choose the proper role name.')
-    assert msg in str(e.value.stderr)
+        msg = ("ERROR: The role 'invalid-role-name' not found. "
+               'Please choose the proper role name.')
+        assert msg in str(e.value.stderr)
 
 
 def test_command_init_scenario_as_default_without_default_scenario(temp_dir):
@@ -169,20 +177,19 @@ def test_command_init_scenario_as_default_without_default_scenario(temp_dir):
     pytest.helpers.run_command(cmd)
 
     role_directory = os.path.join(temp_dir.strpath, 'test-role')
-    os.chdir(role_directory)
+    with change_dir_to(role_directory):
+        molecule_directory = pytest.helpers.molecule_directory()
+        scenario_directory = os.path.join(molecule_directory, 'default')
+        shutil.rmtree(scenario_directory)
 
-    molecule_directory = pytest.helpers.molecule_directory()
-    scenario_directory = os.path.join(molecule_directory, 'default')
-    shutil.rmtree(scenario_directory)
+        options = {
+            'scenario_name': 'default',
+            'role_name': 'test-role',
+        }
+        cmd = sh.molecule.bake('init', 'scenario', **options)
+        pytest.helpers.run_command(cmd)
 
-    options = {
-        'scenario_name': 'default',
-        'role_name': 'test-role',
-    }
-    cmd = sh.molecule.bake('init', 'scenario', **options)
-    pytest.helpers.run_command(cmd)
-
-    assert os.path.isdir(scenario_directory)
+        assert os.path.isdir(scenario_directory)
 
 
 # NOTE(retr0h): Molecule does not allow the creation of a role without
@@ -195,25 +202,25 @@ def test_command_init_scenario_without_default_scenario_raises(temp_dir):
     pytest.helpers.run_command(cmd)
 
     role_directory = os.path.join(temp_dir.strpath, 'test-role')
-    os.chdir(role_directory)
+    with change_dir_to(role_directory):
+        molecule_directory = pytest.helpers.molecule_directory()
+        scenario_directory = os.path.join(molecule_directory, 'default')
+        shutil.rmtree(scenario_directory)
 
-    molecule_directory = pytest.helpers.molecule_directory()
-    scenario_directory = os.path.join(molecule_directory, 'default')
-    shutil.rmtree(scenario_directory)
+        options = {
+            'scenario_name': 'invalid-role-name',
+            'role_name': 'test-role',
+        }
+        with pytest.raises(sh.ErrorReturnCode) as e:
+            cmd = sh.molecule.bake('init', 'scenario', **options)
+            pytest.helpers.run_command(cmd, log=False)
 
-    options = {
-        'scenario_name': 'invalid-role-name',
-        'role_name': 'test-role',
-    }
-    with pytest.raises(sh.ErrorReturnCode) as e:
-        cmd = sh.molecule.bake('init', 'scenario', **options)
-        pytest.helpers.run_command(cmd, log=False)
-
-    msg = ('The default scenario not found.  Please create a scenario '
-           "named 'default' first.")
-    assert msg in str(e.value.stderr)
+        msg = ('The default scenario not found.  Please create a scenario '
+               "named 'default' first.")
+        assert msg in str(e.value.stderr)
 
 
+@skip_unsupported_matrix
 def test_command_init_role_with_template(temp_dir):
     role_name = 'test-init'
     role_directory = os.path.join(temp_dir.strpath, role_name)
@@ -226,11 +233,11 @@ def test_command_init_role_with_template(temp_dir):
     cmd = sh.molecule.bake('init', 'template', **options)
     pytest.helpers.run_command(cmd)
 
-    os.chdir(role_directory)
+    with change_dir_to(role_directory):
+        sh.molecule('test')
 
-    sh.molecule('test')
 
-
+@skip_unsupported_matrix
 @pytest.mark.parametrize(
     'scenario_to_test, driver_name, scenario_name', [
         ('overrride_driver', 'docker', 'default'),
@@ -250,6 +257,7 @@ def test_command_test_overrides_driver(scenario_to_test, with_scenario,
     pytest.helpers.run_command(cmd)
 
 
+@skip_unsupported_matrix
 @pytest.mark.parametrize(
     'scenario_to_test, driver_name, scenario_name', [
         ('driver/docker', 'docker', 'default'),
@@ -270,6 +278,7 @@ def test_command_test_builds_local_molecule_image(
     pytest.helpers.test(driver_name, scenario_name)
 
 
+@skip_unsupported_matrix
 @pytest.mark.parametrize(
     'scenario_to_test, driver_name, scenario_name', [
         ('test_destroy_strategy', 'docker', 'default'),
@@ -296,6 +305,7 @@ def test_command_test_destroy_strategy_always(scenario_to_test, with_scenario,
     assert 0 != e.value.exit_code
 
 
+@skip_unsupported_matrix
 @pytest.mark.parametrize(
     'scenario_to_test, driver_name, scenario_name', [
         ('test_destroy_strategy', 'docker', 'default'),
@@ -321,6 +331,7 @@ def test_command_test_destroy_strategy_never(scenario_to_test, with_scenario,
     assert 0 != e.value.exit_code
 
 
+@skip_unsupported_matrix
 @pytest.mark.parametrize(
     'scenario_to_test, driver_name, scenario_name', [
         ('host_group_vars', 'docker', 'default'),
@@ -343,6 +354,7 @@ def test_host_group_vars(scenario_to_test, with_scenario, scenario_name):
     assert re.search('\[example_1\].*?ok: \[instance\]', out, re.DOTALL)
 
 
+@skip_unsupported_matrix
 @pytest.mark.parametrize(
     'scenario_to_test, driver_name, scenario_name', [
         ('idempotence', 'docker', 'raises'),
@@ -365,6 +377,7 @@ def test_idempotence_raises(scenario_to_test, with_scenario, scenario_name):
     assert 2 == e.value.exit_code
 
 
+@skip_unsupported_matrix
 @pytest.mark.parametrize(
     'scenario_to_test, driver_name, scenario_name', [
         ('interpolation', 'docker', 'default'),
@@ -389,6 +402,7 @@ def test_interpolation(scenario_to_test, with_scenario, scenario_name):
     pytest.helpers.run_command(cmd, env=env)
 
 
+@skip_unsupported_matrix
 @pytest.mark.parametrize(
     'scenario_to_test, driver_name, scenario_name', [
         ('verifier', 'docker', 'testinfra'),
@@ -419,6 +433,7 @@ def test_command_verify_testinfra(scenario_to_test, with_scenario,
     pytest.helpers.run_command(cmd)
 
 
+@skip_unsupported_matrix
 @pytest.mark.parametrize(
     'scenario_to_test, driver_name, scenario_name', [
         ('verifier', 'docker', 'goss'),
@@ -448,6 +463,7 @@ def test_command_verify_goss(scenario_to_test, with_scenario, scenario_name):
     pytest.helpers.run_command(cmd)
 
 
+@skip_unsupported_matrix
 @pytest.mark.parametrize(
     'scenario_to_test, driver_name, scenario_name', [
         ('verifier', 'docker', 'inspec'),
@@ -477,6 +493,7 @@ def test_command_verify_inspec(scenario_to_test, with_scenario, scenario_name):
     pytest.helpers.run_command(cmd)
 
 
+@skip_unsupported_matrix
 @pytest.mark.parametrize(
     'scenario_to_test, driver_name, scenario_name', [
         ('plugins', 'docker', 'default'),

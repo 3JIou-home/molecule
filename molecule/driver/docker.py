@@ -87,7 +87,16 @@ class Docker(base.Base):
 
     .. code-block:: bash
 
-        $ sudo pip install docker-py
+        $ pip install molecule[docker]
+
+    When pulling from a private registry, the username and password must be
+    exported as environment variables in the current shell. The only supported
+    variables are $USERNAME and $PASSWORD.
+
+    .. code-block:: bash
+
+        $ export USERNAME=foo
+        $ export PASSWORD=bar
 
     Provide the files Molecule will preserve upon each subcommand execution.
 

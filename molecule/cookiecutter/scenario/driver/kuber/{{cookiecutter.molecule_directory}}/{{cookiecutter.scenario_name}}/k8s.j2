@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ item.name }}
+  namespace: {{ scenario }}
+  labels:
+{% for item in item.labels %}
+    {{ item['key'] }}: {{ item['value'] }}
+{% endfor %}
+spec:
+  containers:
+      - name: {{ item.name }}
+        image: {{ item.image }}
+        command:
+        - {{ item.command | default(omit) }}
+        ports:
+{% for exposed_ports in item.exposed_ports %}
+        - containerPort: {{ exposed_ports | int | default(omit) }}
+          hostPort: {{ exposed_ports | int | default(omit) }}
+          name: {{ item.name | default(omit) }}
+{% endfor %}
+        env:
+        - name: TERM
+          value: bash
+        - name: TERM
+          value: xterm
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+  name: {{ item.name }}
+  namespace: {{ scenario }}
+spec:
+{% for published_ports in item.published_ports %}
+  backend:
+    serviceName: {{ item.name }}
+    servicePort: {{ published_ports | int | default(omit) }}
+{% endfor %}

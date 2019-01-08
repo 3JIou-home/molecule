@@ -63,6 +63,7 @@ def pre_validate_base_schema(env, keep_string):
                         'azure',
                         'delegated',
                         'docker',
+                        'kuber',
                         'ec2',
                         'gce',
                         'lxc',
@@ -723,6 +724,149 @@ platforms_docker_schema = {
     },
 }
 
+platforms_kuber_schema = {
+    'platforms': {
+        'type': 'list',
+        'schema': {
+            'type': 'dict',
+            'schema': {
+                'name': {
+                    'type': 'string',
+                },
+                'config_path': {
+                    'type': 'string',
+                },
+                'rbac': {
+                    'type': 'boolean',
+                },
+                'labels': {
+                    'type': 'list',
+                    'schema': {
+                        'type': 'dict',
+                        'keyschema': {
+                            'type': 'string',
+                            'regex': '^[a-zA-Z0-9_-]+$',
+                        },
+                    },
+                },
+                'hostname': {
+                    'type': 'string',
+                },
+                'image': {
+                    'type': 'string',
+                },
+                'pull': {
+                    'type': 'boolean',
+                },
+                'pre_build_image': {
+                    'type': 'boolean',
+                },
+                'registry': {
+                    'type': 'dict',
+                    'schema': {
+                        'url': {
+                            'type': 'string',
+                        },
+                        'credentials': {
+                            'type': 'dict',
+                            'schema': {
+                                'username': {
+                                    'type': 'string',
+                                },
+                                'password': {
+                                    'type': 'string',
+                                },
+                                'email': {
+                                    'type': 'string',
+                                },
+                            }
+                        },
+                    }
+                },
+                'command': {
+                    'type': 'string',
+                    'nullable': True,
+                },
+                'privileged': {
+                    'type': 'boolean',
+                },
+                'security_opts': {
+                    'type': 'list',
+                    'schema': {
+                        'type': 'string',
+                    }
+                },
+                'volumes': {
+                    'type': 'list',
+                    'schema': {
+                        'type': 'string',
+                    }
+                },
+                'tmpfs': {
+                    'type': 'list',
+                    'schema': {
+                        'type': 'string',
+                    }
+                },
+                'capabilities': {
+                    'type': 'string',
+                },
+                'exposed_ports': {
+                    'type': 'list',
+                    'schema': {
+                        'type': 'integer',
+                    }
+                },
+                'published_ports': {
+                    'type': 'list',
+                    'schema': {
+                        'type': 'integer',
+                    }
+                },
+                'ulimits': {
+                    'type': 'list',
+                    'schema': {
+                        'type': 'string',
+                    }
+                },
+                'dns_servers': {
+                    'type': 'list',
+                    'schema': {
+                        'type': 'string',
+                    }
+                },
+                'env': {
+                    'type': 'dict',
+                    'keyschema': {
+                        'type': 'string',
+                        'regex': '^[a-zA-Z0-9_-]+$',
+                    }
+                },
+                'restart_policy': {
+                    'type': 'string',
+                },
+                'restart_retries': {
+                    'type': 'integer',
+                },
+                'networks': {
+                    'type': 'list',
+                    'schema': {
+                        'type': 'dict',
+                        'schema': {
+                            'name': {
+                                'type': 'string',
+                            },
+                        }
+                    }
+                },
+                'network_mode': {
+                    'type': 'string',
+                },
+            }
+        }
+    },
+}
+
 platforms_lxd_schema = {
     'platforms': {
         'type': 'list',
@@ -951,6 +1095,8 @@ def validate(c):
     util.merge_dicts(schema, platforms_base_schema)
     if c['driver']['name'] == 'docker':
         util.merge_dicts(schema, platforms_docker_schema)
+    elif c['driver']['name'] == 'kuber':
+        util.merge_dicts(schema, platforms_kuber_schema)
     elif c['driver']['name'] == 'vagrant':
         util.merge_dicts(schema, driver_vagrant_provider_section_schema)
         util.merge_dicts(schema, platforms_vagrant_schema)

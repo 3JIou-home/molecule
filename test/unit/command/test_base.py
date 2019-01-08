@@ -154,7 +154,6 @@ def test_verify_configs_raises_with_no_configs(patched_logger_critical):
         base._verify_configs([])
 
     assert 1 == e.value.code
-
     msg = "'molecule/*/molecule.yml' glob failed.  Exiting."
     patched_logger_critical.assert_called_once_with(msg)
 

@@ -1,0 +1,74 @@
+- name: Destroy
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  no_log: "{{ not (lookup('env', 'MOLECULE_DEBUG') | bool or molecule_yml.provisioner.log|default(false) | bool) }}"
+  tasks:
+    - name: destroy.yml | get scenario name
+      set_fact:
+        scenario: "{{lookup('env', 'MOLECULE_SCENARIO_NAME')}}"
+
+    - name: destroy.yml | get k8s config path (default ~/.kube/config.yml)
+      set_fact:
+        config_path: "{{ item.config_path }}"
+      with_items: "{{ molecule_yml.platforms }}"
+      when: item.config_path is defined
+
+    - name: destroy.yml | get a list of all namespaces objects
+      k8s_facts:
+        api_version: "{{ api_version | default('v1') }}"
+        kind: Namespace
+        name: "{{ scenario }}"
+        namespace: "{{ scenario }}"
+        kubeconfig: "{{ config_path | default('~/.kube/config.yml') }}"
+      register: namespace_list
+
+    - block:
+        - name: destroy.yml | destroy namespace
+          k8s:
+            name: "{{ scenario }}"
+            api_version: "{{ api_version | default('v1') }}"
+            kind: Namespace
+            state: absent
+            kubeconfig: "{{ config_path | default('~/.kube/config.yml') }}"
+          with_list: "{{ namespace_list.resources }}"
+          register: server
+          async: 7200
+          poll: 0
+
+        - name: Wait for instance(s) creation to complete
+          async_status:
+            jid: "{{ item.ansible_job_id }}"
+          register: k8s_jobs
+          until: k8s_jobs.finished
+          retries: 30
+          with_items: "{{ server.results }}"
+      when: scenario != "default"
+
+    - name: destroy.yml | destroy default namespace
+      block:
+        - name: destroy.yml | get ingress name
+          set_fact:
+            ingress: "nginx-ingress"
+
+        - name: destroy.yml | destroy pods
+          command: "kubectl delete pods/{{ item.name }} --force=true --grace-period=0"
+          with_items: "{{ molecule_yml.platforms }}"
+
+        - name: destroy.yml | destroy service accaount
+          command: "kubectl delete serviceaccounts/{{ ingress }} --force=true --grace-period=0"
+
+        - name: destroy.yml | destroy secret
+          command: "kubectl delete secret/default-server-secret --force=true --grace-period=0"
+
+        - name: destroy.yml | destroy config
+          command: "kubectl delete configmap/nginx-config --force=true --grace-period=0"
+
+        - name: destroy.yml | destroy rbac if need
+          command: "kubectl delete clusterrole/{{ ingress }} --force=true --grace-period=0"
+
+        - name: destroy.yml | destroy ingress daemonset
+          command: "kubectl delete daemonset/{{ ingress }} --force=true --grace-period=0"
+
+      when: scenario == "default"
+      ignore_errors: True

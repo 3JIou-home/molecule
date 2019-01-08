@@ -418,13 +418,6 @@ class Ansible(base.Base):
             filter_plugins_path = '{}:{}'.format(filter_plugins_path, path)
         except KeyError:
             pass
-        # Костыль для работы структуры типа:
-        # ansible
-        #  - roles
-        #    - molcule
-        #    - project
-        #      - project-frontend
-        #    - common-role
         env['ANSIBLE_ROLES_PATH'] = roles_path + ':' + roles_path + '/roles' + ':' + roles_path + '/roles/molecule'
         #
         self._config.scenario.ephemeral_directory

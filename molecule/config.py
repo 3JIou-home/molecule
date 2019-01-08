@@ -35,6 +35,7 @@ from molecule.dependency import shell
 from molecule.driver import azure
 from molecule.driver import delegated
 from molecule.driver import docker
+from molecule.driver import kuber
 from molecule.driver import ec2
 from molecule.driver import gce
 from molecule.driver import lxc
@@ -159,6 +160,8 @@ class Config(object):
             driver = delegated.Delegated(self)
         elif driver_name == 'docker':
             driver = docker.Docker(self)
+        elif driver_name == 'kuber':
+            driver = kuber.Kuber(self)
         elif driver_name == 'ec2':
             driver = ec2.EC2(self)
         elif driver_name == 'gce':
@@ -481,6 +484,7 @@ def molecule_drivers():
         azure.Azure(None).name,
         delegated.Delegated(None).name,
         docker.Docker(None).name,
+        kuber.Kuber(None).name,
         ec2.EC2(None).name,
         gce.GCE(None).name,
         lxc.LXC(None).name,
